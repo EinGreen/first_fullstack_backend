@@ -3,7 +3,7 @@ import dbconnect
 from flask import Flask, request, Response
 from flask_cors import CORS
 import json
-# import bjoern
+import sys
 
 # Note: pip is for python, npm is for vue and stuff
 
@@ -157,5 +157,19 @@ def delete_candy():
     else:
         return Response("Something went wrong", mimetype='text/plain', status=500)
 
-app.run(debug=True)
-# bjoern.run(app, "0.0.0.0", 5001)
+if(len(sys.argv) > 1):
+    mode = sys.argv[1]
+else:
+    print("No mode argument, please pass a mode argument when invoking the file")
+    exit()
+
+if(mode == "production"):
+    import bjoern
+    bjoern.run(app, "0.0.0.0", 5021)
+elif(mode == "testing"):
+    from flask_cors import CORS
+    CORS(app)
+    app.run(debug=True)
+else:
+    print("Invalid mode, please select either 'production' or 'testing'")
+    exit()
