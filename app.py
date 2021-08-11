@@ -5,10 +5,7 @@ from flask_cors import CORS
 import json
 import sys
 
-# Note: pip is for python, npm is for vue and stuff
-
 app = Flask(__name__)
-CORS(app)
 
 @app.get("/api/candy")
 def get_candy():
@@ -60,14 +57,13 @@ def post_candy():
     except:
         traceback.print_exc()
         print("Uh oh spaghettio")
+    dbconnect.close_db_cursor(cursor)
+    dbconnect.close_db_connection(conn)
     if new_id == -1:
         return Response("New candy addition failed; try again", mimetype='text/plain   ', status=500)
     else:
         candy_json = json.dumps([candy_name, candy_desc, candy_price, candy_img, new_id], default=str)
         return Response(candy_json, mimetype='application/json', status=200)
-
-    dbconnect.close_db_cursor(cursor)
-    dbconnect.close_db_connection(conn)
 
 @app.patch("/api/candy")
 def patch_candy():
